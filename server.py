@@ -1,18 +1,19 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import io
-from fastapi.middleware.cors import CORSMiddleware
 
+app = FastAPI()
+
+# Configurar CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permitir todas las fuentes (puedes poner un dominio específico si quieres más seguridad)
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-app = FastAPI()
 
 @app.get("/")
 def home():
@@ -23,7 +24,7 @@ async def resize_image(file: UploadFile = File(...)):
     contents = await file.read()
     image = Image.open(io.BytesIO(contents))
     
-    resized_image = image.resize((300, 300))  # Puedes cambiar tamaño aquí
+    resized_image = image.resize((300, 300))  # Cambiar tamaño aquí si quieres
     
     img_bytes = io.BytesIO()
     resized_image.save(img_bytes, format="PNG")
